@@ -12,14 +12,14 @@ import (
 )
 
 func main() {
-	dsn := "host=localhost user=postgres password=root dbname=db_gorm port=5432 sslmode=disable"
+	dsn := "host=localhost user=postgres password=root dbname=db_restbackend port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	fmt.Println("Connected To db_gorm")
+	fmt.Println("Connected To db_restbackend")
 
 	// var users []user.User
 	// length := len(users)
@@ -37,6 +37,13 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
+	userService.SaveAvatar(2, "/images/jpg")
+
+	// er := db.AutoMigrate(user.User{})
+	// if er != nil {
+	// 	log.Fatal(er)
+	// }
+	// fmt.Println("Migrated")
 
 	router := gin.Default()
 
