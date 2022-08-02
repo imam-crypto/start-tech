@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"pustaka-api/helper"
 	"pustaka-api/user"
@@ -137,7 +138,9 @@ func (h *userhandler) UploadAvatar(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	path := "user/images" + file.Filename
+	userID := 1
+
+	path := fmt.Sprintf("user/images/%d-%s", userID, file.Filename)
 
 	err = c.SaveUploadedFile(file, path)
 
@@ -148,8 +151,7 @@ func (h *userhandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	UserID := 1
-	_, err = h.userService.SaveAvatar(UserID, path)
+	_, err = h.userService.SaveAvatar(userID, path)
 	if err != nil {
 		data := gin.H{"is_uploaded": false}
 		response := helper.APIResponse("Upload Failed", http.StatusBadRequest, "failed", data)
@@ -159,5 +161,5 @@ func (h *userhandler) UploadAvatar(c *gin.Context) {
 	data := gin.H{"is_uploaded": true}
 	response := helper.APIResponse("Upload Succesfuly", http.StatusOK, "success", data)
 	c.JSON(http.StatusOK, response)
-	return
+
 }
