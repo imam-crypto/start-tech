@@ -67,7 +67,8 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		authHeader := c.GetHeader("authorization")
 
 		if !strings.Contains(authHeader, "Bearer") {
-			response := helper.APIResponse(http.StatusUnauthorized, false, "unauthorize", nil)
+			response := helper.APIResponse("unauthorize", http.StatusUnauthorized, "failed", nil)
+
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
@@ -78,20 +79,22 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		}
 		token, err := authService.ValidateToken(tokenString)
 		if err != nil {
-			response := helper.APIResponse(http.StatusUnauthorized, false, "unauthorize", nil)
+			response := helper.APIResponse("unauthorize", http.StatusUnauthorized, "failed", nil)
+
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 		claim, ok := token.Claims.(jwt.MapClaims)
 		if !ok || !token.Valid {
-			response := helper.APIResponse(http.StatusUnauthorized, false, "unauthorize", nil)
+			response := helper.APIResponse("unauthorize", http.StatusUnauthorized, "failed", nil)
+
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 		userID := int(claim["user_id"].(float64))
 		user, err := userService.FindById(userID)
 		if err != nil {
-			response := helper.APIResponse(http.StatusUnauthorized, false, "unauthorize", nil)
+			response := helper.APIResponse("unauthorize", http.StatusUnauthorized, "failed", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
