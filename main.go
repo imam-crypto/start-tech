@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"pustaka-api/auth"
+	"pustaka-api/campaign"
 	"pustaka-api/handler"
 	"pustaka-api/helper"
 	"pustaka-api/user"
@@ -26,25 +27,16 @@ func main() {
 
 	fmt.Println("Connected To db_restbackend")
 
-	// var users []user.User
-	// length := len(users)
-	// fmt.Println(length)
+	campaignsRepository := campaign.NewRepository(db)
 
-	// db.Find(&users)
-	// length = len(users)
-	// fmt.Println(length)
-
-	// for _, user := range users {
-	// 	fmt.Println(user.First_name)
-	// 	fmt.Println(user.Email)
-	// }
+	campaignService := campaign.NewService(campaignsRepository)
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
-	// userService.SaveAvatar(2, "/images/jpg")
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 
-	// er := db.AutoMigrate(user.User{})
+	// er := db.AutoMigrate(campaign.Campaign{}, campaign.CampaignImage{})
 	// if er != nil {
 	// 	log.Fatal(er)
 	// }
@@ -60,6 +52,8 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvaibility)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+	// route campaign
+	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	router.Run()
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
