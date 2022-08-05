@@ -44,6 +44,8 @@ func main() {
 
 	router := gin.Default()
 
+	router.Static("/images", "/user/images")
+
 	authService := auth.NewService()
 	// authService.GenerateToken(1001)
 
