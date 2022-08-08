@@ -1,6 +1,7 @@
 package campaign
 
 import (
+	"os/user"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,6 +22,7 @@ type Campaign struct {
 	UpdatedAt         time.Time      `gorm:"autoUpdateTime:milli" json:"updated_at"`
 	DeletedAt         gorm.DeletedAt `json:"deleted_at"`
 	CampaignImages    []CampaignImage
+	Users             user.User
 }
 
 type CampaignImage struct {
