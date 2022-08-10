@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"pustaka-api/auth"
 	"pustaka-api/helper"
 	"pustaka-api/user"
 
@@ -11,10 +12,11 @@ import (
 
 type userhandler struct {
 	userService user.Service
+	authService auth.Service
 }
 
-func NewUserHandler(userService user.Service) *userhandler {
-	return &userhandler{userService}
+func NewUserHandler(userService user.Service, authService auth.Service) *userhandler {
+	return &userhandler{userService, authService}
 }
 func (h *userhandler) RegisterUser(c *gin.Context) {
 	// menangkap input dari user
@@ -44,8 +46,13 @@ func (h *userhandler) RegisterUser(c *gin.Context) {
 		return
 		// c.JSON(http.StatusBadRequest, nil)
 	}
-
-	formatter := user.FormatUser(NewUser, "tokentokentokenlistrik")
+	token, er := h.authService.GenerateToken(NewUser.ID)
+	if er != nil {
+		response := helper.APIResponse("Register Failed", http.StatusBadRequest, er.Error(), nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	formatter := user.FormatUser(NewUser, token)
 
 	response := helper.APIResponse("Account has been created", http.StatusOK, "success", formatter)
 
@@ -80,8 +87,13 @@ func (h *userhandler) Login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
-
-	formatter := user.FormatUser(loogedinUser, "tokentokentokentoken")
+	token, er := h.authService.GenerateToken(loogedinUser.ID)
+	if er != nil {
+		response := helper.APIResponse("Login Failed", http.StatusUnprocessableEntity, er.Error(), nil)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+	formatter := user.FormatUser(loogedinUser, token)
 
 	response := helper.APIResponse("Login Succesfully", http.StatusOK, "success", formatter)
 
@@ -138,7 +150,9 @@ func (h *userhandler) UploadAvatar(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	userID := 1
+	currentUser := c.MustGet("current_user").(user.User)
+
+	userID := currentUser.ID
 
 	path := fmt.Sprintf("user/images/%d-%s", userID, file.Filename)
 

@@ -26,14 +26,14 @@ func main() {
 	}
 
 	fmt.Println("Connected To db_restbackend")
-
+	authService := auth.NewService()
 	campaignsRepository := campaign.NewRepository(db)
 
 	campaignService := campaign.NewService(campaignsRepository)
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 
 	// er := db.AutoMigrate(campaign.Campaign{}, campaign.CampaignImage{})
@@ -46,17 +46,17 @@ func main() {
 
 	router.Static("/images", "/user/images")
 
-	authService := auth.NewService()
 	// authService.GenerateToken(1001)
 
 	api := router.Group("/api/v1")
-	api.POST("/users", userHandler.RegisterUser)
-	api.POST("/sessions", userHandler.Login)
+	api.POST("/register", userHandler.RegisterUser)
+	api.POST("/login", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvaibility)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
 	// route campaign
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
+	api.POST("/campaigns/create-campaign", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
 	router.Run()
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {

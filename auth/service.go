@@ -17,12 +17,12 @@ func NewService() *jwtService {
 	return &jwtService{}
 }
 
-var SECRET_KEY = []byte("PRABS")
+var SECRET_KEY = []byte("PRABSS3cR3tK3eysP")
 
 func (s jwtService) GenerateToken(userID int) (string, error) {
 	claim := jwt.MapClaims{}
 	claim["user_id"] = userID
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claim)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 
 	signedToken, err := token.SignedString(SECRET_KEY)
 

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"pustaka-api/campaign"
 	"pustaka-api/helper"
+	"pustaka-api/user"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -54,5 +55,31 @@ func (h *campaignHandler) GetCampaign(c *gin.Context) {
 		return
 	}
 	response := helper.APIResponse("Data Campaign", http.StatusOK, "success", campaign.FormatCampaignDetail(campaignDetail))
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *campaignHandler) CreateCampaign(c *gin.Context) {
+
+	var input campaign.CreateCampaignInput
+
+	err := c.ShouldBindJSON(&input)
+
+	if err != nil {
+
+		response := helper.APIResponse("Failed ", http.StatusBadRequest, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	currentUser := c.MustGet("current_user").(user.User)
+
+	input.User = currentUser
+	newCampaign, err := h.service.CreateCampaign(input)
+	if err != nil {
+
+		response := helper.APIResponse("Failed Create Campaign", http.StatusUnprocessableEntity, "failed Create Campaign", nil)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+	response := helper.APIResponse("Success ", http.StatusOK, "Success", campaign.FormatCampaign(newCampaign))
 	c.JSON(http.StatusOK, response)
 }
