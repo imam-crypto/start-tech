@@ -29,7 +29,7 @@ type CampaignImage struct {
 	ID          int            `json:"id" gorm:"primaryKey"`
 	Campaign_id int            `json:"campaign_id"`
 	File_name   string         `json:"file_name"`
-	Is_primary  string         `json:"is_primary"`
+	Is_primary  int            `json:"is_primary"`
 	CreatedAt   time.Time      `gorm:"autoCreateTime:milli" json:"created_at"`
 	UpdatedAt   time.Time      `gorm:"autoUpdateTime:milli" json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `json:"deleted_at"`

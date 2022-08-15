@@ -36,11 +36,11 @@ func main() {
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 
-	// er := db.AutoMigrate(campaign.Campaign{}, campaign.CampaignImage{})
-	// if er != nil {
-	// 	log.Fatal(er)
-	// }
-	// fmt.Println("Migrated")
+	er := db.AutoMigrate(campaign.CampaignImage{})
+	if er != nil {
+		log.Fatal(er)
+	}
+	fmt.Println("Migrated")
 
 	router := gin.Default()
 
@@ -57,6 +57,7 @@ func main() {
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
 	api.POST("/campaigns/create-campaign", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
+	api.PUT("/campaigns/update-campaign/:id", authMiddleware(authService, userService), campaignHandler.UpdateCampaign)
 	router.Run()
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
