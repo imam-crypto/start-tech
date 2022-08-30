@@ -8,6 +8,7 @@ import (
 	"pustaka-api/campaign"
 	"pustaka-api/handler"
 	"pustaka-api/helper"
+	"pustaka-api/transaction"
 	"pustaka-api/user"
 	"strings"
 
@@ -28,15 +29,16 @@ func main() {
 	fmt.Println("Connected To db_restbackend")
 	authService := auth.NewService()
 	campaignsRepository := campaign.NewRepository(db)
+	transactionRepository := transaction.NewRepository(db)
 
 	campaignService := campaign.NewService(campaignsRepository)
-
+	transactionService := transaction.NewService(transactionRepository, campaignsRepository)
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
-
-	er := db.AutoMigrate(campaign.CampaignImage{})
+	transactionHandler := handler.NewTransactionHandler(transactionService)
+	er := db.AutoMigrate(transaction.Transaction{})
 	if er != nil {
 		log.Fatal(er)
 	}
@@ -58,6 +60,7 @@ func main() {
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
 	api.POST("/campaigns/create-campaign", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
 	api.PUT("/campaigns/update-campaign/:id", authMiddleware(authService, userService), campaignHandler.UpdateCampaign)
+	api.GET("/campaigns/:id/transactions", transactionHandler.GetCampaignTransactions)
 	router.Run()
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
