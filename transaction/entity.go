@@ -17,6 +17,7 @@ type Transaction struct {
 	Code        string  `json:"code"`
 	Campaign    campaign.Campaign
 	User        user.User
+	PaymentUrl  string
 	CreatedAt   time.Time      `gorm:"autoCreateTime:milli" json:"created_at"`
 	UpdatedAt   time.Time      `gorm:"autoUpdateTime:milli" json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `json:"deleted_at"`
