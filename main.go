@@ -94,7 +94,7 @@ func main() {
 	api.POST("/transaction-create", authMiddleware(authService, userService), transactionHandler.Create)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 	api.GET("/", campaignHandler.Tes)
-	router.Run(":8080")
+	router.Run(":8000")
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
