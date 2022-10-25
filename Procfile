@@ -1,1 +1,1 @@
- web: bin/start-tech
+ web: ./bin/start-tech
