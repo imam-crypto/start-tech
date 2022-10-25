@@ -33,12 +33,12 @@ func main() {
 	db_password := os.Getenv("DB_PASSWORD")
 	db_name := os.Getenv("DB_NAME")
 	db_port := os.Getenv("DB_PORT")
-	db_tz := os.Getenv("DB_TZ")
+	// db_tz := os.Getenv("DB_TZ")
 	db_user := os.Getenv("DB_USER")
 
 	dsn := fmt.Sprintf(
-		"host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=%v",
-		db_host, db_user, db_password, db_name, db_port, db_tz,
+		"host=%v user=%v password=%v dbname=%v port=%v sslmode=disable",
+		db_host, db_user, db_password, db_name, db_port,
 	)
 
 	// dsn := "host=localhost user=postgres password=root dbname=db_restbackend port=5432 sslmode=disable"
