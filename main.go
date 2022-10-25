@@ -34,6 +34,7 @@ func main() {
 	db_port := os.Getenv("DB_PORT")
 	// db_tz := os.Getenv("DB_TZ")
 	db_user := os.Getenv("DB_USER")
+	port := os.Getenv("PORT")
 
 	dsn := fmt.Sprintf(
 		"host=%v user=%v password=%v dbname=%v port=%v sslmode=disable",
@@ -94,7 +95,7 @@ func main() {
 	api.POST("/transaction-create", authMiddleware(authService, userService), transactionHandler.Create)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
 	api.GET("/", campaignHandler.Tes)
-	router.Run(":8000")
+	router.Run(port + ":")
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
