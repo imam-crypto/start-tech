@@ -174,3 +174,7 @@ func (h *campaignHandler) UploadImage(c *gin.Context) {
 	response := helper.APIResponse("Upload Image Succesfuly", http.StatusOK, "success", data)
 	c.JSON(http.StatusOK, response)
 }
+func (h *campaignHandler) Tes(c *gin.Context) {
+
+	fmt.Print("tes")
+}

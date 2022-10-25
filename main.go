@@ -94,6 +94,7 @@ func main() {
 	api.GET("/campaigns/transactions-user", authMiddleware(authService, userService), transactionHandler.GeUserTransaction)
 	api.POST("/transaction-create", authMiddleware(authService, userService), transactionHandler.Create)
 	api.POST("/transactions/notification", transactionHandler.GetNotification)
+	api.GET("/", campaignHandler.Tes)
 	router.Run()
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
