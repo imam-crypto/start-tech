@@ -1,1 +1,1 @@
-web:start-tech
+ web: main
