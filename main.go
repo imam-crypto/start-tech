@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"pustaka-api/auth"
 	"pustaka-api/campaign"
 	"pustaka-api/handler"
@@ -16,12 +17,31 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
-	dsn := "host=localhost user=postgres password=root dbname=db_restbackend port=5432 sslmode=disable"
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	db_host := os.Getenv("DB_HOST")
+	db_password := os.Getenv("DB_PASSWORD")
+	db_name := os.Getenv("DB_NAME")
+	db_port := os.Getenv("DB_PORT")
+	db_tz := os.Getenv("DB_TZ")
+	db_user := os.Getenv("DB_USER")
+
+	dsn := fmt.Sprintf(
+		"host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=%v",
+		db_host, db_user, db_password, db_name, db_port, db_tz,
+	)
+
+	// dsn := "host=localhost user=postgres password=root dbname=db_restbackend port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
