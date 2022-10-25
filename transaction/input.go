@@ -9,7 +9,7 @@ type GetCampaignTransactionInput struct {
 
 type CreateTransactionInput struct {
 	Amount     int `json:"amount"`
-	CampaignID int `json:"campaign_id"`
+	CampaignID int `json:"order_id"`
 	User       user.User
 }
 type TransactionNotificationInput struct {

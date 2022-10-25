@@ -65,6 +65,7 @@ func (s *service) CreateTransaction(input CreateTransactionInput) (Transaction, 
 	tr.Campaign_id = input.CampaignID
 	tr.Amount = float64(input.Amount)
 	tr.User_id = input.User.ID
+	tr.Code = "GDPNIHBOS007"
 	tr.Status = "PENDING"
 
 	newTransaction, err := s.repository.Save(tr)
@@ -83,10 +84,10 @@ func (s *service) CreateTransaction(input CreateTransactionInput) (Transaction, 
 	}
 	newTransaction.PaymentUrl = paymentUrl
 
-	newTransaction, err = s.repository.Update(tr)
-	if err != nil {
-		return newTransaction, err
-	}
+	// newTransaction, err = s.repository.Update(tr)
+	// if err != nil {
+	// 	return newTransaction, err
+	// }
 
 	return newTransaction, nil
 }

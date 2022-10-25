@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  postgresql:
+    container_name: pustaka-postgresql
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=db_restbackend
+    ports:
+      - "5432"
+    hostname: localhost
+    networks:
+      - pustaka
+  app:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    container_name: pustaka
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+    networks:
+      - pustaka
+networks:
+  pustaka:
+    driver: bridge
+    

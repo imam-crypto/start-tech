@@ -45,22 +45,21 @@ func (s *service) GetPaymentURL(tr TransactionPayment, user user.User) (string, 
 	// return response.RedirectURL, nil
 
 	midclient := midtrans.NewClient()
-	midclient.ServerKey = "YOUR-VT-SERVER-KEY"
-	midclient.ClientKey = "YOUR-VT-CLIENT-KEY"
+	midclient.ServerKey = "SB-Mid-server-xpySI2e3T6y1JFu9adlfwEEX"
+	midclient.ClientKey = "SB-Mid-client-4fjaM5wf5Zgcgx50"
 	midclient.APIEnvType = midtrans.Sandbox
 
 	snapGateway := midtrans.SnapGateway{
 		Client: midclient,
 	}
 	snapReq := &midtrans.SnapReq{
+		CustomerDetail: &midtrans.CustDetail{
+			FName: user.First_name,
+			Email: user.Email,
+		},
 		TransactionDetails: midtrans.TransactionDetails{
 			OrderID:  strconv.Itoa(tr.ID),
 			GrossAmt: int64(tr.Amount),
-		},
-		CustomerDetail: &midtrans.CustDetail{
-			FName: user.First_name,
-
-			Email: user.Email,
 		},
 	}
 

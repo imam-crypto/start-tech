@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -41,8 +42,8 @@ func main() {
 	userService := user.NewService(userRepository)
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
-	transactionHandler := handler.NewTransactionHandler(transactionService, paymentService)
-	er := db.AutoMigrate(transaction.Transaction{})
+	transactionHandler := handler.NewTransactionHandler(transactionService)
+	er := db.AutoMigrate(user.User{}, campaign.CampaignImage{}, transaction.Transaction{})
 	if er != nil {
 		log.Fatal(er)
 	}
@@ -50,8 +51,8 @@ func main() {
 
 	router := gin.Default()
 
-	router.Static("/images", "/user/images")
-
+	router.Static("/images", "user/images/")
+	router.Use(cors.Default())
 	// authService.GenerateToken(1001)
 
 	api := router.Group("/api/v1")
@@ -59,13 +60,20 @@ func main() {
 	api.POST("/login", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvaibility)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+	api.GET("/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
 	// route campaign
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
 	api.POST("/campaigns/create-campaign", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
 	api.PUT("/campaigns/update-campaign/:id", authMiddleware(authService, userService), campaignHandler.UpdateCampaign)
+	api.POST("/campaign-images", authMiddleware(authService, userService), campaignHandler.UploadImage)
+
+	// route for handler transaction
+
 	api.GET("/campaigns/:id/transactions", transactionHandler.GetCampaignTransactions)
-	api.GET("/campaigns/transactions", transactionHandler.GeUserTransaction)
+	api.GET("/campaigns/transactions-user", authMiddleware(authService, userService), transactionHandler.GeUserTransaction)
+	api.POST("/transaction-create", authMiddleware(authService, userService), transactionHandler.Create)
+	api.POST("/transactions/notification", transactionHandler.GetNotification)
 	router.Run()
 }
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {

@@ -23,9 +23,16 @@ func (h *transactionHandler) GetCampaignTransactions(c *gin.Context) {
 	// idString := c.Param("id")
 	// id, _ := strconv.Atoi(idString)
 
-	currentUser := c.MustGet("current_user").(user.User)
+	err := c.ShouldBindUri(&input)
+	if err != nil {
 
-	input.ID = currentUser.ID
+		response := helper.APIResponse("Data Not Found", http.StatusBadRequest, "failed", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	// currentUser := c.MustGet("current_user").(user.User)
+
+	// input.ID = currentUser.ID
 
 	tr, err := h.service.GetTransactionByCampaignID(input)
 	if err != nil {
@@ -74,14 +81,14 @@ func (h *transactionHandler) Create(c *gin.Context) {
 	}
 
 	currentUser := c.MustGet("current_user").(user.User)
-	userID := currentUser.ID
+	userID := currentUser
 
-	input.User.ID = userID
+	input.User = userID
 
 	tr, err := h.service.CreateTransaction(input)
 	if err != nil {
 
-		response := helper.APIResponse("Data Not Found", http.StatusBadRequest, "failed", nil)
+		response := helper.APIResponse("Failed insert", http.StatusBadRequest, "failed", err.Error())
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
