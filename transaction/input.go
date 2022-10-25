@@ -1,6 +1,6 @@
 package transaction
 
-import "pustaka-api/user"
+import "start-tech/user"
 
 type GetCampaignTransactionInput struct {
 	ID   int `uri:"id" binding:"required"`

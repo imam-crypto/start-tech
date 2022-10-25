@@ -2,9 +2,9 @@ package handler
 
 import (
 	"net/http"
-	"pustaka-api/helper"
-	"pustaka-api/transaction"
-	"pustaka-api/user"
+	"start-tech/helper"
+	"start-tech/transaction"
+	"start-tech/user"
 
 	"github.com/gin-gonic/gin"
 )

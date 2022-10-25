@@ -1,6 +1,6 @@
 package campaign
 
-import "pustaka-api/user"
+import "start-tech/user"
 
 type GetCampaignInput struct {
 	ID int `uri:"ID" binding:"required"`

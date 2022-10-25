@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"pustaka-api/campaign"
-	"pustaka-api/user"
+	"start-tech/campaign"
+	"start-tech/user"
 	"time"
 
 	"gorm.io/gorm"

@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"pustaka-api/campaign"
-	"pustaka-api/payment"
+	"start-tech/campaign"
+	"start-tech/payment"
 	"strconv"
 )
 

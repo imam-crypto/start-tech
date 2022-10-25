@@ -3,9 +3,9 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"pustaka-api/campaign"
-	"pustaka-api/helper"
-	"pustaka-api/user"
+	"start-tech/campaign"
+	"start-tech/helper"
+	"start-tech/user"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
 package campaign
 
 import (
-	"pustaka-api/user"
+	"start-tech/user"
 	"time"
 
 	"gorm.io/gorm"
